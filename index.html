@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pavli — Architecture &amp; Photography</title>
+<meta name="description" content="Pavli — architecture graduate moving into architectural photography. Based in Stuttgart.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0d0c;
+    --bg-raised:#141412;
+    --text:#edeae4;
+    --muted:#8c8880;
+    --line:#2a2a26;
+    --accent:#5b8598;   /* blueprint blue-grey */
+    --accent-dim:#3a5566;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:300;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  ::selection{ background:var(--accent-dim); color:var(--text); }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; }
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(13,13,12,0.88);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:72px;
+  }
+  .logo{
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.1rem; letter-spacing:0.02em;
+    text-decoration:none;
+  }
+  .logo span{ color:var(--accent); }
+  .navlinks{ display:flex; gap:36px; list-style:none; }
+  .navlinks a{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem;
+    letter-spacing:0.12em; text-transform:uppercase;
+    text-decoration:none; color:var(--muted);
+    transition:color .25s ease;
+  }
+  .navlinks a:hover{ color:var(--text); }
+  .navtoggle{ display:none; background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer; }
+
+  @media (max-width:720px){
+    .navlinks{
+      position:fixed; inset:72px 0 0 0; height:calc(100vh - 72px);
+      background:var(--bg); flex-direction:column; padding:40px 32px; gap:28px;
+      transform:translateX(100%); transition:transform .35s ease;
+    }
+    .navlinks.open{ transform:translateX(0); }
+    .navlinks a{ font-size:0.95rem; }
+    .navtoggle{ display:block; }
+  }
+
+  /* HERO */
+  .hero{
+    position:relative;
+    padding:min(18vh,150px) 0 100px;
+    border-bottom:1px solid var(--line);
+  }
+  .tick{ position:absolute; width:22px; height:22px; }
+  .tick::before,.tick::after{ content:''; position:absolute; background:var(--accent); }
+  .tick::before{ width:100%; height:1px; top:0; }
+  .tick::after{ width:1px; height:100%; left:0; }
+  .tick.tl{ top:24px; left:32px; }
+  .tick.tr{ top:24px; right:32px; }
+  .tick.tr::before{ } .tick.tr::after{ left:auto; right:0; }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:0.75rem; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:28px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .eyebrow .rule{ width:40px; height:1px; background:var(--accent); display:inline-block; }
+
+  h1{
+    font-family:'Fraunces', serif; font-weight:500; font-size:clamp(2.4rem, 6vw, 5rem);
+    line-height:1.05; letter-spacing:-0.01em; max-width:14ch;
+  }
+  h1 em{ font-style:italic; font-weight:500; color:var(--muted); }
+
+  .hero-rule{
+    height:1px; width:0; background:var(--accent); margin-top:34px;
+    animation:draw 1.4s ease forwards .3s;
+  }
+  @keyframes draw{ to{ width:min(420px, 60%); } }
+
+  .hero-sub{
+    max-width:52ch; margin-top:34px; color:var(--muted);
+    font-size:1.05rem; font-weight:300;
+  }
+
+  .hero-meta{
+    margin-top:56px; display:flex; gap:48px; flex-wrap:wrap;
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--muted);
+    letter-spacing:0.06em;
+  }
+  .hero-meta strong{ display:block; color:var(--text); font-size:0.85rem; margin-bottom:4px; font-weight:400; }
+
+  /* SECTION HEADERS */
+  .section{ padding:110px 0; border-bottom:1px solid var(--line); }
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+    margin-bottom:56px; flex-wrap:wrap;
+  }
+  .section-label{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent);
+  }
+  .section-title{
+    font-family:'Fraunces', serif; font-size:clamp(1.6rem,3vw,2.3rem); font-weight:500;
+  }
+  .section-note{ font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--muted); max-width:32ch; text-align:right; }
+  @media (max-width:720px){ .section-note{ text-align:left; } }
+
+  /* GALLERY */
+  .grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:2px;
+    background:var(--line);
+  }
+  @media (max-width:900px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
+
+  .plate{
+    position:relative; background:var(--bg-raised);
+    aspect-ratio:4/5; overflow:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:24px;
+    border:1px dashed var(--line);
+  }
+  .plate img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    display:block;
+  }
+  .plate .crosshair{
+    width:34px; height:34px; position:relative; margin-bottom:18px;
+    transition:transform .4s ease;
+  }
+  .plate .crosshair::before,.plate .crosshair::after{
+    content:''; position:absolute; background:var(--muted);
+  }
+  .plate .crosshair::before{ width:100%; height:1px; top:50%; }
+  .plate .crosshair::after{ width:1px; height:100%; left:50%; }
+  .plate:hover .crosshair{ transform:rotate(45deg); }
+  .plate:hover{ border-color:var(--accent); }
+  .plate .cap{ font-family:'IBM Plex Mono', monospace; font-size:0.68rem; color:var(--muted); letter-spacing:0.05em; line-height:1.5; }
+  .plate .cap b{ display:block; color:var(--text); font-size:0.72rem; margin-bottom:6px; letter-spacing:0.1em; }
+
+  /* ABOUT */
+  .about-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:start; }
+  @media (max-width:800px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-body p{ margin-bottom:20px; max-width:56ch; color:var(--text); font-size:1.02rem; }
+  .about-body p.muted{ color:var(--muted); }
+  .facts{ border-top:1px solid var(--line); }
+  .fact{
+    display:flex; justify-content:space-between; gap:16px;
+    padding:16px 0; border-bottom:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem;
+  }
+  .fact span:first-child{ color:var(--muted); }
+
+  /* CONTACT */
+  .contact{ padding:110px 0 90px; }
+  .contact-inner{ display:flex; justify-content:space-between; align-items:flex-end; gap:40px; flex-wrap:wrap; }
+  .contact h2{
+    font-family:'Fraunces', serif; font-weight:500; font-size:clamp(2rem,5vw,3.4rem);
+    max-width:12ch; line-height:1.1;
+  }
+  .contact-links{ display:flex; flex-direction:column; gap:10px; }
+  .contact-links a{
+    font-family:'IBM Plex Mono', monospace; font-size:0.95rem;
+    text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:4px;
+    transition:border-color .25s ease, color .25s ease;
+  }
+  .contact-links a:hover{ border-color:var(--accent); color:var(--accent); }
+
+  footer{ padding:28px 0; }
+  footer .wrap{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'IBM Plex Mono', monospace; font-size:0.68rem; color:var(--muted);
+    letter-spacing:0.06em; flex-wrap:wrap; gap:8px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero-rule{ animation:none; width:min(420px,60%); }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="#top" class="logo">PAVLI<span>.</span></a>
+    <ul class="navlinks" id="navlinks">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="navtoggle" id="navtoggle" aria-label="Toggle menu">≡</button>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <span class="tick tl"></span>
+  <span class="tick tr"></span>
+  <div class="wrap">
+    <div class="eyebrow"><span class="rule"></span>Stuttgart, Germany</div>
+    <h1>Trained to draw buildings.<br><em>Learning to see them.</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">
+      An architecture graduate's eye, turned toward a camera. This is a working
+      portfolio — a place to collect studies of light, structure, and material
+      while I move from designing buildings to photographing them.
+    </p>
+    <div class="hero-meta">
+      <div><strong>Background</strong>Architektur und Stadtplanung,<br>Universität Stuttgart</div>
+      <div><strong>Focus</strong>Architectural &amp; spatial photography</div>
+      <div><strong>Status</strong>Building a portfolio, open to studio work</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Selected Work</div>
+        <div class="section-title">A working index</div>
+      </div>
+      <div class="section-note">Plates below are placeholders — swap each with a photograph. Captions describe what belongs there.</div>
+    </div>
+
+    <div class="grid">
+      <!-- PLATE 1 — replace this whole .plate div's contents with: <img src="your-photo.jpg" alt="description"> -->
+      <div class="plate">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Façade</b>vertical · daylight<br>replace with image</div>
+      </div>
+      <div class="plate">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Interior</b>horizontal · natural light<br>replace with image</div>
+      </div>
+      <div class="plate">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Structure</b>detail · texture &amp; material<br>replace with image</div>
+      </div>
+      <div class="plate">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Light study</b>vertical · shadow &amp; form<br>replace with image</div>
+      </div>
+      <div class="plate">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Public space</b>horizontal · people &amp; scale<br>replace with image</div>
+      </div>
+      <div class="plate">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Night / long exposure</b>vertical · artificial light<br>replace with image</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="section-label">About</div>
+        <div class="section-title">From plan to photograph</div>
+      </div>
+    </div>
+    <div class="about-grid">
+      <div class="about-body">
+        <p>
+          I studied architecture and urban planning at the Universität Stuttgart,
+          finishing in 2025. Somewhere in the middle of drawing plans and building
+          models, I got more interested in how a building actually looks — the way
+          light lands on a façade at a certain hour, or how a material reads
+          differently in a photograph than on a site visit.
+        </p>
+        <p class="muted">
+          I'm now building a photography practice around that interest, with a
+          particular focus on architecture. This site will grow as the work does —
+          for now, consider it a working sketch of where that's headed.
+        </p>
+      </div>
+      <div class="facts">
+        <div class="fact"><span>Based in</span><span>Stuttgart, Germany</span></div>
+        <div class="fact"><span>Education</span><span>B.Sc. Architektur und Stadtplanung</span></div>
+        <div class="fact"><span>Languages</span><span>Arabic · German · English</span></div>
+        <div class="fact"><span>Interested in</span><span>Architectural photography, studio work</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap contact-inner">
+    <h2>Let's talk about a project.</h2>
+    <div class="contact-links">
+      <a href="mailto:you@example.com">you@example.com</a>
+      <a href="#" target="_blank" rel="noopener">Instagram — @yourhandle</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Pavli</span>
+    <span>Stuttgart, Germany</span>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('navtoggle');
+  const links = document.getElementById('navlinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+</script>
+
+</body>
+</html>
