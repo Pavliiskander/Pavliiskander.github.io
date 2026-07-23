@@ -137,6 +137,22 @@
   .section-note{ font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--muted); max-width:32ch; text-align:right; }
   @media (max-width:720px){ .section-note{ text-align:left; } }
 
+  /* FILTER TABS */
+  .filters{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin-bottom:40px; padding-bottom:32px; border-bottom:1px solid var(--line);
+  }
+  .filter-btn{
+    font-family:'IBM Plex Mono', monospace; font-size:0.7rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--muted);
+    background:transparent; border:1px solid var(--line);
+    padding:9px 16px; cursor:pointer;
+    transition:color .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .filter-btn:hover{ color:var(--text); border-color:var(--muted); }
+  .filter-btn.active{ color:var(--bg); background:var(--accent); border-color:var(--accent); }
+  .plate.is-hidden{ display:none; }
+
   /* GALLERY */
   .grid{
     display:grid; grid-template-columns:repeat(3, 1fr); gap:2px;
@@ -233,13 +249,14 @@
     <h1>Trained to draw buildings.<br><em>Learning to see them.</em></h1>
     <div class="hero-rule"></div>
     <p class="hero-sub">
-      An architecture graduate's eye, turned toward a camera. This is a working
-      portfolio — a place to collect studies of light, structure, and material
-      while I move from designing buildings to photographing them.
+      An architecture graduate's eye, turned toward a camera. Architecture is
+      where that eye is most at home — facades, structure, light, and the
+      spaces people gather in — but the same instinct for form and timing
+      carries into motorsport, cars, and 35mm film.
     </p>
     <div class="hero-meta">
       <div><strong>Background</strong>Architektur und Stadtplanung,<br>Universität Stuttgart</div>
-      <div><strong>Focus</strong>Architectural &amp; spatial photography</div>
+      <div><strong>Focus</strong>Architectural photography, plus motorsport, cars &amp; culture</div>
       <div><strong>Status</strong>Building a portfolio, open to studio work</div>
     </div>
   </div>
@@ -255,31 +272,84 @@
       <div class="section-note">Plates below are placeholders — swap each with a photograph. Captions describe what belongs there.</div>
     </div>
 
-    <div class="grid">
-      <!-- PLATE 1 — replace this whole .plate div's contents with: <img src="your-photo.jpg" alt="description"> -->
-      <div class="plate">
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="architecture">Architecture</button>
+      <button class="filter-btn" data-filter="motorsport">Motorsport</button>
+      <button class="filter-btn" data-filter="cars">Cars</button>
+      <button class="filter-btn" data-filter="culture">Culture</button>
+      <button class="filter-btn" data-filter="35mm">35mm</button>
+      <button class="filter-btn" data-filter="all">All</button>
+    </div>
+
+    <div class="grid" id="gallery">
+      <!-- ARCHITECTURE — replace a plate's inner contents with: <img src="your-photo.jpg" alt="description"> -->
+      <div class="plate" data-category="architecture">
         <div class="crosshair"></div>
         <div class="cap"><b>Façade</b>vertical · daylight<br>replace with image</div>
       </div>
-      <div class="plate">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Interior</b>horizontal · natural light<br>replace with image</div>
-      </div>
-      <div class="plate">
+      <div class="plate" data-category="architecture">
         <div class="crosshair"></div>
         <div class="cap"><b>Structure</b>detail · texture &amp; material<br>replace with image</div>
       </div>
-      <div class="plate">
+      <div class="plate" data-category="architecture">
         <div class="crosshair"></div>
-        <div class="cap"><b>Light study</b>vertical · shadow &amp; form<br>replace with image</div>
+        <div class="cap"><b>Cultural space</b>interior · museum or theatre<br>replace with image</div>
       </div>
-      <div class="plate">
+      <div class="plate" data-category="architecture">
         <div class="crosshair"></div>
-        <div class="cap"><b>Public space</b>horizontal · people &amp; scale<br>replace with image</div>
+        <div class="cap"><b>Religious architecture</b>vertical · nave or dome<br>replace with image</div>
       </div>
-      <div class="plate">
+      <div class="plate" data-category="architecture">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Modern civic</b>horizontal · public building<br>replace with image</div>
+      </div>
+      <div class="plate" data-category="architecture">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Public realm</b>horizontal · people &amp; scale<br>replace with image</div>
+      </div>
+      <div class="plate" data-category="architecture">
         <div class="crosshair"></div>
         <div class="cap"><b>Night / long exposure</b>vertical · artificial light<br>replace with image</div>
+      </div>
+
+      <!-- MOTORSPORT -->
+      <div class="plate is-hidden" data-category="motorsport">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Track action</b>horizontal · panning shot<br>replace with image</div>
+      </div>
+      <div class="plate is-hidden" data-category="motorsport">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Pit lane</b>horizontal · behind the scenes<br>replace with image</div>
+      </div>
+
+      <!-- CARS -->
+      <div class="plate is-hidden" data-category="cars">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Detail</b>vertical · bodywork &amp; light<br>replace with image</div>
+      </div>
+      <div class="plate is-hidden" data-category="cars">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Static</b>horizontal · full car, studio or street<br>replace with image</div>
+      </div>
+
+      <!-- CULTURE -->
+      <div class="plate is-hidden" data-category="culture">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Street life</b>horizontal · candid<br>replace with image</div>
+      </div>
+      <div class="plate is-hidden" data-category="culture">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Portrait</b>vertical · environmental<br>replace with image</div>
+      </div>
+
+      <!-- 35MM -->
+      <div class="plate is-hidden" data-category="35mm">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Film frame</b>vertical · analog grain<br>replace with image</div>
+      </div>
+      <div class="plate is-hidden" data-category="35mm">
+        <div class="crosshair"></div>
+        <div class="cap"><b>Film frame</b>horizontal · analog grain<br>replace with image</div>
       </div>
     </div>
   </div>
@@ -303,9 +373,12 @@
           differently in a photograph than on a site visit.
         </p>
         <p class="muted">
-          I'm now building a photography practice around that interest, with a
-          particular focus on architecture. This site will grow as the work does —
-          for now, consider it a working sketch of where that's headed.
+          Architecture is the main focus of that practice — facades, structure,
+          and the way people use civic, cultural, and religious spaces. I also
+          shoot motorsport, cars, and 35mm film, which feed back into how I
+          look at buildings: timing, composition, and an eye for material.
+          This site will grow as the work does — for now, consider it a
+          working sketch of where that's headed.
         </p>
       </div>
       <div class="facts">
@@ -322,10 +395,8 @@
   <div class="wrap contact-inner">
     <h2>Let's talk about a project.</h2>
     <div class="contact-links">
-      <a href="mailto:analogaegypter@gmail.com">analogaegypter@gmail.com</a>
-      <a href="https://instagram.com/analog_aegypter" target="_blank" rel="noopener">Instagram — @analog_aegypter</a>
-      <a href="mailto:pavli.atef01@gmail.com">pavli.atef01@gmail.com</a>
-      <a href="https://instagram.com/pavli_iskander" target="_blank" rel="noopener">Instagram — @pavli_iskander</a>
+      <a href="mailto:you@example.com">you@example.com</a>
+      <a href="#" target="_blank" rel="noopener">Instagram — @yourhandle</a>
     </div>
   </div>
 </section>
@@ -342,6 +413,20 @@
   const links = document.getElementById('navlinks');
   toggle.addEventListener('click', () => links.classList.toggle('open'));
   links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const plates = document.querySelectorAll('#gallery .plate');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      plates.forEach(plate => {
+        const show = filter === 'all' || plate.dataset.category === filter;
+        plate.classList.toggle('is-hidden', !show);
+      });
+    });
+  });
 </script>
 
 </body>
