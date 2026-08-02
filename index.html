@@ -282,76 +282,10 @@
     </div>
 
     <div class="grid" id="gallery">
-      <!-- ARCHITECTURE — replace a plate's inner contents with: <img src="your-photo.jpg" alt="description"> -->
-      <div class="plate" data-category="architecture">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Façade</b>vertical · daylight<br>replace with image</div>
-      </div>
-      <div class="plate" data-category="architecture">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Structure</b>detail · texture &amp; material<br>replace with image</div>
-      </div>
-      <div class="plate" data-category="architecture">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Cultural space</b>interior · museum or theatre<br>replace with image</div>
-      </div>
-      <div class="plate" data-category="architecture">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Religious architecture</b>vertical · nave or dome<br>replace with image</div>
-      </div>
-      <div class="plate" data-category="architecture">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Modern civic</b>horizontal · public building<br>replace with image</div>
-      </div>
-      <div class="plate" data-category="architecture">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Public realm</b>horizontal · people &amp; scale<br>replace with image</div>
-      </div>
-      <div class="plate" data-category="architecture">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Night / long exposure</b>vertical · artificial light<br>replace with image</div>
-      </div>
-
-      <!-- MOTORSPORT -->
-      <div class="plate is-hidden" data-category="motorsport">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Track action</b>horizontal · panning shot<br>replace with image</div>
-      </div>
-      <div class="plate is-hidden" data-category="motorsport">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Pit lane</b>horizontal · behind the scenes<br>replace with image</div>
-      </div>
-
-      <!-- CARS -->
-      <div class="plate is-hidden" data-category="cars">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Detail</b>vertical · bodywork &amp; light<br>replace with image</div>
-      </div>
-      <div class="plate is-hidden" data-category="cars">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Static</b>horizontal · full car, studio or street<br>replace with image</div>
-      </div>
-
-      <!-- CULTURE -->
-      <div class="plate is-hidden" data-category="culture">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Street life</b>horizontal · candid<br>replace with image</div>
-      </div>
-      <div class="plate is-hidden" data-category="culture">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Portrait</b>vertical · environmental<br>replace with image</div>
-      </div>
-
-      <!-- 35MM -->
-      <div class="plate is-hidden" data-category="35mm">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Film frame</b>vertical · analog grain<br>replace with image</div>
-      </div>
-      <div class="plate is-hidden" data-category="35mm">
-        <div class="crosshair"></div>
-        <div class="cap"><b>Film frame</b>horizontal · analog grain<br>replace with image</div>
-      </div>
+      <!-- This grid fills itself automatically from the /photos/<category>/ folders in the repo. -->
+      <!-- Just upload images into photos/architecture/, photos/motorsport/, photos/cars/, photos/culture/, or photos/35mm/ — no editing needed here. -->
     </div>
+    <p class="mono" id="gallery-status" style="color:var(--muted); font-size:0.75rem; margin-top:24px; display:none;">Loading photos…</p>
   </div>
 </section>
 
@@ -416,19 +350,69 @@
   toggle.addEventListener('click', () => links.classList.toggle('open'));
   links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
 
+  // ---- Auto-loading gallery ----
+  // Reads images directly from photos/<category>/ folders in this repo.
+  // To add a photo: upload it into the matching folder and commit. That's it.
+  const REPO = 'Pavliiskander/Pavliiskander.github.io';
+  const BRANCH = 'main';
+  const CATEGORIES = ['architecture', 'motorsport', 'cars', 'culture', '35mm'];
+  const gallery = document.getElementById('gallery');
+  const status = document.getElementById('gallery-status');
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const plates = document.querySelectorAll('#gallery .plate');
+
+  function applyFilter(filter){
+    document.querySelectorAll('#gallery .plate').forEach(plate => {
+      const show = filter === 'all' || plate.dataset.category === filter;
+      plate.classList.toggle('is-hidden', !show);
+    });
+  }
+
+  function currentFilter(){
+    const active = document.querySelector('.filter-btn.active');
+    return active ? active.dataset.filter : 'architecture';
+  }
+
+  function captionFromFilename(name){
+    return name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
+  }
+
+  async function loadCategory(cat){
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/photos/${encodeURIComponent(cat)}?ref=${BRANCH}`);
+    if(!res.ok) return; // folder doesn't exist yet — fine, just skip it
+    const files = await res.json();
+    if(!Array.isArray(files)) return;
+    files
+      .filter(f => f.type === 'file' && /\.(jpe?g|png|webp)$/i.test(f.name))
+      .sort((a,b) => a.name.localeCompare(b.name))
+      .forEach(f => {
+        const plate = document.createElement('div');
+        plate.className = 'plate';
+        plate.dataset.category = cat;
+        const img = document.createElement('img');
+        img.src = f.download_url;
+        img.loading = 'lazy';
+        img.alt = captionFromFilename(f.name);
+        plate.appendChild(img);
+        gallery.appendChild(plate);
+      });
+  }
+
+  async function loadGallery(){
+    status.style.display = 'block';
+    await Promise.all(CATEGORIES.map(loadCategory));
+    status.style.display = 'none';
+    applyFilter(currentFilter());
+  }
+
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const filter = btn.dataset.filter;
-      plates.forEach(plate => {
-        const show = filter === 'all' || plate.dataset.category === filter;
-        plate.classList.toggle('is-hidden', !show);
-      });
+      applyFilter(btn.dataset.filter);
     });
   });
+
+  loadGallery();
 </script>
 
 </body>
